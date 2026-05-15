@@ -22,25 +22,9 @@ const BELL_SCHEDULE = [
 ];
 
 function getESTTime() {
-  const now = new Date();
-  // We use Intl.DateTimeFormat to reliably get the time in America/New_York
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/New_York',
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
-    hour12: false
-  });
-  
-  const parts = formatter.formatToParts(now);
-  const v: Record<string, number> = {};
-  parts.forEach(p => { if (p.type !== 'literal') v[p.type] = parseInt(p.value, 10); });
-
-  // Create a date object based on the formatted parts
-  const estDate = new Date(v.year, v.month - 1, v.day, v.hour, v.minute, v.second);
+  // Get time in America/New_York (EST/EDT)
+  const estString = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+  const estDate = new Date(estString);
   
   // The user reported the clock is 3 hours ahead, so we subtract 3 hours (10,800,000 ms)
   return new Date(estDate.getTime() - (3 * 3600 * 1000));
